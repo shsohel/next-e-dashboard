@@ -23,8 +23,8 @@ module.exports = {
         poppins: ['Poppins', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
-        primary: '#FA1B5A',
-        secondary: '#33003A',
+        primary: '#0288D1',
+        secondary: '#0F172A',
         'secondary-light': '#63245D',
         'gradient-one': '#32003B',
         'gradient-two': '#3E002F',
