@@ -23,8 +23,12 @@ module.exports = {
         poppins: ['Poppins', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
-        primary: '#0288D1',
+        primary: '#2684FF',
         secondary: '#0F172A',
+        danger: '#FF0000',
+        success: '#5cb85c',
+        info: '#5bc0de',
+        warning: '#f0ad4e',
         'secondary-light': '#63245D',
         'gradient-one': '#32003B',
         'gradient-two': '#3E002F',

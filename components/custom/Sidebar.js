@@ -47,9 +47,9 @@ const Sidebar = (props) => {
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
                   <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl dark:bg-secondary">
                     <div className="flex-1 overflow-y-auto py-6 px-4 sm:px-6">
-                      <div className="">
+                      <div className=" border-b pb-1">
                         <div className="flex items-center justify-between">
-                          <Dialog.Title className="text-lg font-medium dark:text-white">
+                          <Dialog.Title className=" text-lg font-medium dark:text-white">
                             {title}
                           </Dialog.Title>
                           <div className="ml-3 flex h-7 items-center">
@@ -60,7 +60,7 @@ const Sidebar = (props) => {
                             >
                               <span className="sr-only">Close panel</span>
                               <RxCross1
-                                className="h-6 w-6"
+                                className="h-5 w-5"
                                 aria-hidden="true"
                               />
                             </button>
@@ -68,7 +68,7 @@ const Sidebar = (props) => {
                         </div>
                       </div>
 
-                      {children}
+                      <div className="py-3">{children}</div>
                     </div>
 
                     {FooterComponent}
