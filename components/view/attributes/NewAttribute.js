@@ -2,14 +2,61 @@ import React from 'react';
 import ReactSelect from 'react-select';
 import Sidebar from '../../custom/Sidebar';
 import CreatableSelect from 'react-select/creatable';
-const NewAttribute = (props) => {
-  const { handleSidebarModal, isOpen } = props;
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  addAttribute,
+  attributeSidebarOpen,
+  bindAttributeBasicInfo,
+  updateAttribute,
+} from '../../../store/attributes/actions';
+const NewAttribute = ({ isOpen }) => {
+  const dispatch = useDispatch();
+  const { attribute } = useSelector(({ attributes }) => attributes);
+
+  const handleDataOnChange = (e) => {
+    const { name, value } = e.target;
+    const updateInfo = {
+      ...attribute,
+      [name]: value,
+    };
+    dispatch(bindAttributeBasicInfo(updateInfo));
+  };
+
+  const handleDropdownOChange = (data, e) => {
+    const { action, name, option } = e;
+    const updateInfo = {
+      ...attribute,
+      [name]: data,
+    };
+    dispatch(bindAttributeBasicInfo(updateInfo));
+  };
+
+  const handleCreateValue = (value) => {
+    const option = {
+      value: value,
+      label: value,
+    };
+    console.log(value);
+    const updateInfo = {
+      ...attribute,
+      ['values']: [...attribute.values, option],
+    };
+    dispatch(bindAttributeBasicInfo(updateInfo));
+  };
 
   const handleSubmit = () => {
-    handleSidebarModal(false);
+    const submitObj = {
+      ...attribute,
+      values: attribute.values.map((s) => s.label),
+    };
+    if (attribute._id) {
+      dispatch(updateAttribute(submitObj));
+    } else {
+      dispatch(addAttribute(submitObj));
+    }
   };
   const handleCancel = () => {
-    handleSidebarModal(false);
+    dispatch(attributeSidebarOpen(false));
   };
 
   const FooterComponent = () => {
@@ -37,7 +84,7 @@ const NewAttribute = (props) => {
   return (
     <div>
       <Sidebar
-        handleSidebarModal={handleSidebarModal}
+        handleSidebarModal={handleCancel}
         isOpen={isOpen}
         title="New Attribute"
         FooterComponent={<FooterComponent />}
@@ -52,10 +99,14 @@ const NewAttribute = (props) => {
             </label>
             <input
               type="text"
-              name="first-name"
-              id="first-name"
+              name="name"
+              id="name"
               autoComplete="given-name"
               className="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              value={attribute.name}
+              onChange={(e) => {
+                handleDataOnChange(e);
+              }}
             />
           </div>
           <div className="">
@@ -67,11 +118,16 @@ const NewAttribute = (props) => {
             </label>
             <CreatableSelect
               id="valueId"
+              name="values"
               isMulti
               isClearable
-              value={[]}
+              value={attribute.values}
               placeholder="Select Value"
               options={[]}
+              onChange={(data, e) => {
+                handleDropdownOChange(data, e);
+              }}
+              onCreateOption={handleCreateValue}
               styles={{
                 valueContainer: (styles, state) => ({
                   ...styles,
@@ -96,12 +152,15 @@ const NewAttribute = (props) => {
               Description
             </label>
             <textarea
-              id="about"
-              name="about"
+              id="description"
+              name="description"
               rows={3}
               className="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
               placeholder="description"
-              defaultValue={''}
+              value={attribute.description}
+              onChange={(e) => {
+                handleDataOnChange(e);
+              }}
             />
           </div>
         </div>
