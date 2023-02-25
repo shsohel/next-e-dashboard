@@ -4,39 +4,38 @@ import { useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  attributeSidebarOpen,
-  deleteAttribute,
-  getAttribute,
-  getAttributes,
-} from '../../../store/attributes/actions';
+  productCategorySidebarOpen,
+  deleteProductCategory,
+  getProductCategory,
+  getProductCategories,
+} from '../../../store/product-category/actions';
 import { tableCustomStyles } from '../../../utils/utolity';
-import NewAttribute from './NewAttribute';
 import { IoMdRefreshCircle } from 'react-icons/io';
 import { FaPencilAlt, FaTrashAlt } from 'react-icons/fa';
 import ListLoader from '../../custom/ListLoader';
+import ProductCategoryForm from './ProductCategoryForm';
 
-const AttributeLists = (props) => {
+const ProductCategoryList = (props) => {
   const dispatch = useDispatch();
   const [rowPerPage, setRowPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [orderBy, setOrderBy] = useState('asc');
   const [sortedBy, setSortedBy] = useState('name');
 
-  const { attributes, total, dataProgress, openAttributeSidebar } = useSelector(
-    ({ attributes }) => attributes
-  );
+  const { productCategories, total, dataProgress, openProductCategorySidebar } =
+    useSelector(({ productCategories }) => productCategories);
 
   const [filterObj, setFilterObj] = useState({
     name: '',
   });
 
-  const getAllAttributes = () => {
+  const getAllProductCategories = () => {
     dispatch(
-      getAttributes(
+      getProductCategories(
         {
           page: currentPage,
           limit: rowPerPage,
-          // sort: sortedBy,
+          sort: sortedBy,
           orderBy: orderBy,
         },
         filterObj
@@ -45,7 +44,7 @@ const AttributeLists = (props) => {
   };
 
   useEffect(() => {
-    getAllAttributes();
+    getAllProductCategories();
   }, [dispatch, rowPerPage, currentPage, orderBy, sortedBy, filterObj.name]);
 
   const handleFilterObj = (e) => {
@@ -102,14 +101,14 @@ const AttributeLists = (props) => {
               className=" cursor-pointer fill-green-600 hover:animate-spin hover:fill-primary"
               size={30}
               onClick={() => {
-                getAllAttributes();
+                getAllProductCategories();
               }}
             />
           </div>
           <button
             className="rounded-sm bg-primary py-1 px-3 font-medium text-white hover:bg-secondary"
             onClick={() => {
-              dispatch(attributeSidebarOpen(true));
+              dispatch(productCategorySidebarOpen(true));
             }}
           >
             Add New
@@ -128,7 +127,7 @@ const AttributeLists = (props) => {
               <ListLoader rowLength={10} colLength={9} />
             </div>
           }
-          data={attributes}
+          data={productCategories}
           className="border "
           onChangeRowsPerPage={handlePerPage}
           onSort={handleSort}
@@ -146,14 +145,14 @@ const AttributeLists = (props) => {
                 <div className="flex justify-between">
                   <FaTrashAlt
                     onClick={() => {
-                      dispatch(deleteAttribute(row));
+                      dispatch(deleteProductCategory(row));
                     }}
                     size={16}
                     className="mr-3 cursor-pointer fill-red-600"
                   />
                   <FaPencilAlt
                     onClick={() => {
-                      dispatch(getAttribute(row));
+                      dispatch(getProductCategory(row));
                     }}
                     size={16}
                     className="cursor-pointer fill-green-600"
@@ -171,11 +170,11 @@ const AttributeLists = (props) => {
               cell: (row) => row.name,
             },
             {
-              id: 'value',
-              name: 'Value',
+              id: 'subCategories',
+              name: 'Sub Categories',
               width: '250px',
 
-              cell: (row) => row.values.toString(),
+              cell: (row) => row.subCategories.map((pc) => pc.name).toString(),
             },
             {
               id: 'descriptions',
@@ -187,7 +186,7 @@ const AttributeLists = (props) => {
           pagination
         />
       </div>
-      <NewAttribute isOpen={openAttributeSidebar} />
+      <ProductCategoryForm isOpen={openProductCategorySidebar} />
     </div>
   );
 };
@@ -204,4 +203,4 @@ export async function getServerSideProps() {
   return { props: { data } };
 }
 
-export default AttributeLists;
+export default ProductCategoryList;

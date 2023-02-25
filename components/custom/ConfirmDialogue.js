@@ -16,8 +16,12 @@ export const confirmDialog = (confirmObj) => {
     confirmButtonText,
     cancelButtonText,
     customClass: {
-      confirmButton: 'bg-primary py-1 px-2 text-white',
-      cancelButton: 'btn btn-danger ml-1',
+      confirmButton:
+        'bg-primary py-1 px-3 text-white font-semibold rounded-sm mr-1',
+      cancelButton: 'bg-danger py-1 px-3 text-white font-semibold rounded-sm',
+      // container: 'bg-danger',
+      // htmlContainer: 'm-0',
+      // title: 'my-0 py-0  bg-danger',
     },
     buttonsStyling: false,
   });
