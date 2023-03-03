@@ -32,6 +32,12 @@ const mainNavigation = [
         icon: VariableIcon,
         current: false,
       },
+      {
+        name: 'Product',
+        href: '/product',
+        icon: VariableIcon,
+        current: false,
+      },
       { name: 'Recent', href: '#', icon: ClockIcon, current: false },
     ],
   },

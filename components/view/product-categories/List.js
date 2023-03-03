@@ -174,7 +174,8 @@ const ProductCategoryList = (props) => {
               name: 'Sub Categories',
               width: '250px',
 
-              cell: (row) => row.subCategories.map((pc) => pc.name).toString(),
+              cell: (row) =>
+                row.productSubCategories.map((pc) => pc.name).toString(),
             },
             {
               id: 'descriptions',

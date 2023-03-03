@@ -104,7 +104,7 @@ export const getProductCategory =
           console.log('data', data);
           const ProductCategoryObj = {
             ...data,
-            subCategories: data.subCategories.map((v) => ({
+            subCategories: data.productSubCategories.map((v) => ({
               value: v._id,
               label: v.name,
             })),

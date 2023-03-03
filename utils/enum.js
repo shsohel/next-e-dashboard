@@ -1,3 +1,5 @@
+import countryData from './data/country.json';
+
 export const confirmObj = {
   title: 'Are you sure?',
   text: "You won't be able to revert this!",
@@ -15,3 +17,9 @@ export const status = {
   conflict: 409,
   methodNotAllow: 405,
 };
+
+export const countries = countryData.map(country =>({
+  country: country.name,
+  code: country.code,
+  state: country.states
+}))
