@@ -5,36 +5,16 @@ import { useSelector } from 'react-redux';
 import ReactSelect from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 import { selectThemeColors } from '../../../utils/utolity';
+import TabControl from '../../custom/TabControl';
+import RichEditor from '../../RichEditor';
+import Attribute from './Attribute';
 import GeneralInfo from './GeneralInfo';
+import Inventory from './Inventory';
+import ProductImage from './ProductImage';
+import Shipping from './Shipping';
 
-const defaultTabs = [
-  {
-    id: 1,
-    name: 'General',
-    current: true,
-    component: (
-      <div>
-        <GeneralInfo />
-      </div>
-    ),
-  },
-  { id: 2, name: 'Inventory', current: false, component: <div>2nd</div> },
-  {
-    id: 3,
-    name: 'Shipping',
-    current: false,
-    component: <div>3rd</div>,
-  },
-  { id: 4, name: 'Attribute', current: false, component: <div>4th</div> },
-  { id: 5, name: 'Advanced', current: false, component: <div>4th</div> },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 const ProductForm = () => {
   const router = useRouter();
-  const [tabs, setTabs] = useState(defaultTabs);
   const { product } = useSelector(({ products }) => products);
 
   const handleDataOnChange = (event) => {};
@@ -43,17 +23,28 @@ const ProductForm = () => {
 
   const handleSubmit = () => {};
   const handleCancel = () => {};
-  const handleTableControl = (t) => {
-    const updatedTabs = tabs.map((tab) => {
-      if (tab.id === t.id) {
-        tab['current'] = true;
-      } else {
-        tab['current'] = false;
-      }
-      return tab;
-    });
-    setTabs(updatedTabs);
-  };
+  console.log(product);
+  const defaultTabs = [
+    {
+      id: 1,
+      name: 'General',
+      current: true,
+      component: (
+        <div>
+          <GeneralInfo />
+        </div>
+      ),
+    },
+    { id: 2, name: 'Inventory', current: false, component: <Inventory /> },
+    {
+      id: 3,
+      name: 'Shipping',
+      current: false,
+      component: <Shipping />,
+    },
+    { id: 4, name: 'Attribute', current: false, component: <Attribute /> },
+    { id: 5, name: 'Images', current: false, component: <ProductImage /> },
+  ];
   return (
     <div>
       <div className="mb-1 border px-5 py-2 text-right">
@@ -98,67 +89,7 @@ const ProductForm = () => {
                 />
               </div>
               <div className="">
-                <div>
-                  <div className="sm:hidden">
-                    <label htmlFor="tabs" className="sr-only">
-                      Select a tab
-                    </label>
-                    {/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
-                    <select
-                      id="tabs"
-                      name="tabs"
-                      className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                      defaultValue={tabs.find((tab) => tab.current).name}
-                    >
-                      {tabs.map((tab) => (
-                        <option key={tab.name}>{tab.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex ">
-                    <div className=" border">
-                      <nav
-                        className=" z-0 flex flex-col divide-y  divide-gray-200  shadow"
-                        aria-label="Tabs"
-                      >
-                        {tabs.map((tab, tabIdx) => (
-                          <button
-                            key={tab.name}
-                            onClick={() => {
-                              handleTableControl(tab);
-                            }}
-                            className={classNames(
-                              tab.current
-                                ? 'text-gray-900'
-                                : 'text-gray-500 hover:text-gray-700',
-                              'group relative min-w-0 flex-1 overflow-hidden bg-white py-4 px-4 text-left  text-sm font-medium hover:bg-gray-50 focus:z-10'
-                            )}
-                            aria-current={tab.current ? 'page' : undefined}
-                          >
-                            <span>{tab.name}</span>
-                            <span
-                              aria-hidden="true"
-                              className={classNames(
-                                tab.current
-                                  ? 'bg-indigo-500'
-                                  : 'bg-transparent',
-                                'absolute inset-x-0 bottom-0 h-0.5'
-                              )}
-                            />
-                          </button>
-                        ))}
-                      </nav>
-                    </div>
-
-                    <div className=" w-full border border-l-0 px-6">
-                      {tabs.map((tab, tabIdx) => (
-                        <div hidden={!tab.current} key={tabIdx}>
-                          {tab.component}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <TabControl defaultTabs={defaultTabs} />
               </div>
               <div className="">
                 <label
@@ -198,8 +129,12 @@ const ProductForm = () => {
                   }}
                 />
               </div>
+              {/* <div className="">
+                <RichEditor />
+              </div> */}
             </div>
           </div>
+          {/* Category Section */}
           <div className="col-span-2">
             <div className="grid grid-cols-1 gap-6">
               <div className="">

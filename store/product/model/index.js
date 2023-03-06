@@ -1,17 +1,21 @@
+import { uniqId } from '../../../utils/utolity.js';
 export const ProductBasicInfoModal = {
   _id: null,
   name: '',
   sku: '',
   price: 3500,
   salePrice: 3500,
-  imgUrl: {
-    url: '',
-    isDefault: true,
-  },
+  images: [],
 
   discount: null,
   brand: null,
-  attribute: [],
+  attributes: [
+    {
+      id: uniqId(),
+      attribute: null,
+      values: [],
+    },
+  ],
   productCategory: null,
   productSubCategory: [],
   isStockQuantity: 0,

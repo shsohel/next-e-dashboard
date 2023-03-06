@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-const GeneralInfo = () => {
+const Inventory = () => {
   const { product } = useSelector(({ products }) => products);
   const handleDataOnChange = (event) => {};
   return (
@@ -11,14 +11,14 @@ const GeneralInfo = () => {
           htmlFor="name"
           className="col-span-1 block text-sm font-medium text-gray-700"
         >
-          Regular Price :
+          SKU :
         </label>
         <input
-          type="number"
+          type="text"
           name="name"
           id="name"
           autoComplete="given-name"
-          className="col-span-4 mt-1 block w-full rounded-sm border-gray-300  text-sm shadow-sm focus:border-primary focus:ring-primary "
+          className="col-span-4 mt-1 block w-full rounded-sm border-gray-300 text-sm shadow-sm focus:border-primary focus:ring-primary "
           value={product.name}
           onChange={(e) => {
             handleDataOnChange(e);
@@ -30,14 +30,14 @@ const GeneralInfo = () => {
           htmlFor="name"
           className="col-span-1 block text-sm font-medium text-gray-700"
         >
-          Sale Price :
+          is Stock?
         </label>
         <input
-          type="number"
+          type="checkbox"
           name="name"
           id="name"
           autoComplete="given-name"
-          className="col-span-4 mt-1 block w-full rounded-sm border-gray-300  text-sm shadow-sm focus:border-primary focus:ring-primary "
+          className="col-span-4 mt-1 block h-5 w-5 rounded-sm border-gray-300 text-sm shadow-sm focus:border-primary focus:ring-primary "
           value={product.name}
           onChange={(e) => {
             handleDataOnChange(e);
@@ -48,4 +48,4 @@ const GeneralInfo = () => {
   );
 };
 
-export default GeneralInfo;
+export default Inventory;
