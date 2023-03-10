@@ -12,6 +12,7 @@ import {
   GET_PRODUCT_CATEGORY_BY_ID,
   OPEN_PRODUCT_CATEGORY_SIDEBAR,
   GET_PRODUCT_CATEGORY_DROPDOWN,
+  DROP_DOWN_PRODUCT_SUB_CATEGORY_BY_PRODUCT_ID,
 } from '../action-types';
 import { ProductCategoryBasicInfoModal } from '../model';
 
@@ -69,14 +70,14 @@ export const getProductCategories =
   };
 
 export const getProductCategoryDropdown = () => async (dispatch) => {
-  const apiEndpoint = `/api/product-category}`;
+  const apiEndpoint = `/api/product-category`;
   dispatch({
     type: GET_PRODUCT_CATEGORY_DROPDOWN,
     dropdownProductCategory: [],
     isDropdownProductCategoryLoaded: false,
   });
   await axios
-    .get()
+    .get(apiEndpoint)
     .then((response) => {
       if (response.status === 200) {
         dispatch({
@@ -98,6 +99,44 @@ export const getProductCategoryDropdown = () => async (dispatch) => {
       });
     });
 };
+// case DROP_DOWN_PRODUCT_SUB_CATEGORY_BY_PRODUCT_ID:
+//   return {
+//     ...state,
+//     dropdownProductSubcategory: action.dropdownProductSubcategory,
+//     isDropdownProductSubcategoryLoaded:
+//       action.isDropdownProductSubcategoryLoaded,
+//   };
+export const getProductSubCategoryDropdownByCategoryId =
+  (categoryId) => async (dispatch) => {
+    const apiEndpoint = `/api/product-category/sub-category/${categoryId}`;
+    dispatch({
+      type: DROP_DOWN_PRODUCT_SUB_CATEGORY_BY_PRODUCT_ID,
+      dropdownProductSubcategory: [],
+      isDropdownProductSubcategoryLoaded: false,
+    });
+    await axios
+      .get(apiEndpoint)
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch({
+            type: DROP_DOWN_PRODUCT_SUB_CATEGORY_BY_PRODUCT_ID,
+            dropdownProductSubcategory: response.data.data.map((pc) => ({
+              label: pc.name,
+              value: pc._id,
+            })),
+            isDropdownProductSubcategoryLoaded: true,
+          });
+        }
+      })
+      .catch((e) => {
+        notify('warning', 'Server Side ERROR');
+        dispatch({
+          type: DROP_DOWN_PRODUCT_SUB_CATEGORY_BY_PRODUCT_ID,
+          dropdownProductSubcategory: [],
+          isDropdownProductSubcategoryLoaded: true,
+        });
+      });
+  };
 
 export const addProductCategory =
   (productCategories) => (dispatch, getState) => {

@@ -8,14 +8,14 @@ import {
   BIND_PRODUCT_BASIC_INFO,
   BIND_PRODUCT_ATTRIBUTES,
 } from '../action-types';
-import { ProductBasicInfoModal, attributes } from '../model';
+import { productBasicInfoModal, attributes } from '../model';
 
 const initialState = {
   dataProgress: false,
   submitProductDataProgress: false,
   openProductSidebar: false,
   products: [],
-  product: ProductBasicInfoModal,
+  product: productBasicInfoModal,
   total: 1,
   queryParams: {},
   queryObj: {},

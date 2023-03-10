@@ -7,7 +7,7 @@ const attributes = [
     values: [],
   },
 ];
-export const ProductBasicInfoModal = {
+export const productBasicInfoModal = {
   _id: null,
   name: '',
   sku: '',
@@ -31,5 +31,13 @@ export const ProductBasicInfoModal = {
   descriptions: '',
   shotDescriptions: '',
   shippingMethod: null,
+  tag: [],
   isActive: true,
+  status: { label: 'Draft', value: 'Draft' },
 };
+
+export const productStatus = [
+  { label: 'Draft', value: 'Draft' },
+  { label: 'Published', value: 'Published' },
+  { label: 'Private', value: 'Private' },
+];

@@ -4,7 +4,7 @@ import { convertQueryString } from '../../../utils/utolity';
 export default (req, res) => {
   if (req.method === 'POST') {
     baseAxios
-      .post(`/productCategory?${convertQueryString(req.query)}`, req.body)
+      .post(`/tag?${convertQueryString(req.query)}`, req.body)
       .then((response) => {
         res.status(200).json(response.data);
       })
@@ -20,7 +20,7 @@ export default (req, res) => {
       });
   } else if (req.method === 'GET') {
     baseAxios
-      .get(`/productCategory`)
+      .get(`/tag`)
       .then((response) => {
         res.status(200).json(response.data);
       })

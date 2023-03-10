@@ -66,7 +66,6 @@ export const getProducts = (queryParams, queryObj) => async (dispatch) => {
 };
 
 export const addProduct = (products) => async (dispatch, getState) => {
-  console.log(products);
   const apiEndpoint = `/api/product/create`;
   dispatch(productDataSubmitOnProgress(true));
   await axios
@@ -75,7 +74,6 @@ export const addProduct = (products) => async (dispatch, getState) => {
       if (response.status === 201) {
         const { queryParams, queryObj } = getState().products;
         dispatch(productDataSubmitOnProgress(false));
-        dispatch(productSidebarOpen(false));
         dispatch(bindProductBasicInfo(productBasicInfoModal));
         dispatch(getProducts(queryParams, queryObj));
         notify('success', 'The Product has been added successfully');

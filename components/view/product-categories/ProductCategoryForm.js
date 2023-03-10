@@ -56,6 +56,7 @@ const ProductCategoryForm = ({ isOpen }) => {
     };
     dispatch(bindProductCategoryBasicInfo(updateInfo));
   };
+
   const handleCreateValue = (value) => {
     const option = {
       name: value,

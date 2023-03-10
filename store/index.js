@@ -5,6 +5,7 @@ import attributes from './attributes/reducers';
 import productCategories from './product-category/reducers';
 import productSubCategories from './product-sub-category/reducers';
 import products from './product/reducers';
+import tags from './tag/reducers';
 
 // const middleware = [thunk, createDebounce()];
 const middleware =
@@ -21,6 +22,7 @@ export const store = configureStore({
     productCategories,
     productSubCategories,
     products,
+    tags,
   },
   // middleware: (getDefaultMiddleware) =>
   //   getDefaultMiddleware().concat(...middleware),

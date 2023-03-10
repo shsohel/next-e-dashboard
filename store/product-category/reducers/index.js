@@ -7,6 +7,7 @@ import {
   OPEN_PRODUCT_CATEGORY_SIDEBAR,
   BIND_PRODUCT_CATEGORY_BASIC_INFO,
   GET_PRODUCT_CATEGORY_DROPDOWN,
+  DROP_DOWN_PRODUCT_SUB_CATEGORY_BY_PRODUCT_ID,
 } from '../action-types';
 import { ProductCategoryBasicInfoModal } from '../model';
 
@@ -20,7 +21,9 @@ const initialState = {
   queryParams: {},
   queryObj: {},
   dropdownProductCategory: [],
-  isDropdownProductCategoryLoaded: [],
+  isDropdownProductCategoryLoaded: true,
+  dropdownProductSubcategory: [],
+  isDropdownProductSubcategoryLoaded: true,
 };
 
 const productCategoryReducers = (state = initialState, action) => {
@@ -66,6 +69,13 @@ const productCategoryReducers = (state = initialState, action) => {
         ...state,
         dropdownProductCategory: action.dropdownProductCategory,
         isDropdownProductCategoryLoaded: action.isDropdownProductCategoryLoaded,
+      };
+    case DROP_DOWN_PRODUCT_SUB_CATEGORY_BY_PRODUCT_ID:
+      return {
+        ...state,
+        dropdownProductSubcategory: action.dropdownProductSubcategory,
+        isDropdownProductSubcategoryLoaded:
+          action.isDropdownProductSubcategoryLoaded,
       };
 
     default:

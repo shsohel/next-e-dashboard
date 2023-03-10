@@ -3,7 +3,16 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactSelect from 'react-select';
 import CreatableSelect from 'react-select/creatable';
-import { bindProductBasicInfo } from '../../../store/product/actions';
+import {
+  getProductCategoryDropdown,
+  getProductSubCategoryDropdownByCategoryId,
+} from '../../../store/product-category/actions';
+import {
+  addProduct,
+  bindProductBasicInfo,
+} from '../../../store/product/actions';
+import { productStatus } from '../../../store/product/model';
+import { getTagDropdown, instantCreateTag } from '../../../store/tag/actions';
 import { selectThemeColors } from '../../../utils/utolity';
 import TabControl from '../../custom/TabControl';
 // import RichEditor from '../../RichEditor';
@@ -17,6 +26,14 @@ const ProductForm = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
   const { product } = useSelector(({ products }) => products);
+  const {
+    dropdownProductCategory,
+    isDropdownProductCategoryLoaded,
+    dropdownProductSubcategory,
+    isDropdownProductSubcategoryLoaded,
+  } = useSelector(({ productCategories }) => productCategories);
+  const { dropdownTag, isDropdownTagLoaded, submitTagDataProgress } =
+    useSelector(({ tags }) => tags);
 
   const handleDataOnChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -32,9 +49,90 @@ const ProductForm = () => {
     dispatch(bindProductBasicInfo(updatedProduct));
   };
 
-  const handleDropdownOChange = () => {};
+  const handleDropdownOChange = (data, e) => {
+    const { name } = e;
+    if (name === 'productCategory') {
+      const updatedProduct = {
+        ...product,
+        [name]: data,
+        ['productSubCategory']: [],
+      };
 
-  const handleSubmit = () => {};
+      dispatch(bindProductBasicInfo(updatedProduct));
+    } else {
+      const updatedProduct = {
+        ...product,
+        [name]: data,
+      };
+
+      dispatch(bindProductBasicInfo(updatedProduct));
+    }
+  };
+
+  const handleTagOnFocus = () => {
+    dispatch(getTagDropdown());
+  };
+
+  const bindCreatedTag = (tag) => {
+    const option = {
+      value: tag._id,
+      label: tag.name,
+    };
+    const updateInfo = {
+      ...product,
+      ['tag']: [...product.tag, option],
+    };
+    dispatch(bindProductBasicInfo(updateInfo));
+    handleTagOnFocus();
+  };
+
+  const handleTagCreateValue = (value) => {
+    const option = {
+      name: value,
+      description: value,
+    };
+
+    dispatch(instantCreateTag(option, bindCreatedTag));
+  };
+
+  const handleProductCategoryOnFocus = () => {
+    dispatch(getProductCategoryDropdown());
+  };
+  const handleProductSubCategoryOnFocus = (categoryId) => {
+    dispatch(getProductSubCategoryDropdownByCategoryId(categoryId));
+  };
+
+  const handleSubmit = () => {
+    const submitObj = {
+      name: product.name,
+      sku: product.sku,
+      price: product.price,
+      salePrice: product.salePrice,
+      images: product.images,
+      discount: null,
+      productCategory: product.productCategory?.value ?? null,
+      productSubCategory: product.productSubCategory.map(
+        (subCategory) => subCategory.value
+      ),
+      brand: product.brand?.value ?? null,
+
+      attribute: product.attributes.map((att) => ({
+        id: att.attribute?.value ?? null,
+        values: att.values.map((v) => v.label),
+      })),
+      weight: product.weight,
+      length: product.length,
+      height: product.height,
+      width: product.width,
+      isProductStockAvailable: product.isProductStockAvailable,
+      descriptions: product.descriptions,
+      shotDescriptions: product.shotDescriptions,
+      tag: product.tag.map((t) => t.value),
+      status: product.status?.label,
+    };
+    console.log('submitObj', JSON.stringify(submitObj, null, 2));
+    dispatch(addProduct(submitObj));
+  };
   const handleCancel = () => {};
   const defaultTabs = [
     {
@@ -159,15 +257,15 @@ const ProductForm = () => {
                 <ReactSelect
                   id="statusId"
                   instanceId="statusId"
+                  theme={selectThemeColors}
                   name="status"
                   className="mt-1 focus:ring-0"
                   isClearable
-                  value={null}
-                  options={[]}
+                  value={product.status}
+                  options={productStatus}
                   onChange={(data, e) => {
                     handleDropdownOChange(data, e);
                   }}
-                  theme={selectThemeColors}
                 />
               </div>
               <div className="">
@@ -177,18 +275,22 @@ const ProductForm = () => {
                 >
                   Product Category
                 </label>
-                <CreatableSelect
-                  id="statusId"
-                  instanceId="statusId"
-                  name="status"
+                <ReactSelect
+                  theme={selectThemeColors}
+                  id="productCategoryId"
+                  instanceId="productCategoryId"
+                  isLoading={!isDropdownProductCategoryLoaded}
+                  name="productCategory"
                   className="mt-1 focus:ring-0"
                   isClearable
-                  value={null}
-                  options={[]}
+                  value={product.productCategory}
+                  options={dropdownProductCategory}
                   onChange={(data, e) => {
                     handleDropdownOChange(data, e);
                   }}
-                  theme={selectThemeColors}
+                  onFocus={() => {
+                    handleProductCategoryOnFocus();
+                  }}
                 />
               </div>
               <div className="">
@@ -198,19 +300,26 @@ const ProductForm = () => {
                 >
                   Product Sub Category
                 </label>
-                <CreatableSelect
-                  id="statusId"
+                <ReactSelect
+                  theme={selectThemeColors}
+                  id="productSubCategoryId"
+                  instanceId="productSubCategoryId"
+                  isDisabled={!product.productCategory}
                   isMulti
-                  instanceId="statusId"
-                  name="status"
+                  isLoading={!isDropdownProductSubcategoryLoaded}
+                  name="productSubCategory"
                   className="mt-1 focus:ring-0"
                   isClearable
-                  value={null}
-                  options={[]}
+                  value={product.productSubCategory}
+                  options={dropdownProductSubcategory}
                   onChange={(data, e) => {
                     handleDropdownOChange(data, e);
                   }}
-                  theme={selectThemeColors}
+                  onFocus={() => {
+                    handleProductSubCategoryOnFocus(
+                      product.productCategory?.value
+                    );
+                  }}
                 />
               </div>
               <div className="">
@@ -221,18 +330,25 @@ const ProductForm = () => {
                   Tags
                 </label>
                 <CreatableSelect
-                  id="statusId"
+                  theme={selectThemeColors}
+                  id="dropdownTagId"
+                  instanceId="dropdownTagId"
                   isMulti
-                  instanceId="statusId"
-                  name="status"
+                  isLoading={!isDropdownTagLoaded || submitTagDataProgress}
+                  name="tag"
                   className="mt-1 focus:ring-0"
                   isClearable
-                  value={null}
-                  options={[]}
+                  value={product.tag}
+                  options={dropdownTag}
                   onChange={(data, e) => {
                     handleDropdownOChange(data, e);
                   }}
-                  theme={selectThemeColors}
+                  onFocus={() => {
+                    handleTagOnFocus();
+                  }}
+                  onCreateOption={(inputValue) => {
+                    handleTagCreateValue(inputValue);
+                  }}
                 />
               </div>
             </div>
