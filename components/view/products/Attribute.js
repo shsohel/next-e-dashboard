@@ -1,26 +1,51 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactSelect from 'react-select';
+import ReactCreatableSelect from 'react-select/creatable';
+import { selectThemeColors, uniqId } from '../../../utils/utolity';
 import {
-  selectThemeColors,
-  tableCustomStyles,
-  uniqId,
-} from '../../../utils/utolity';
-import {
-  PlayPauseIcon,
-  SquaresPlusIcon,
+  MinusCircleIcon,
   PlusCircleIcon,
   PlusIcon,
-  MinusCircleIcon,
 } from '@heroicons/react/24/outline';
-import { bindProductBasicInfo } from '../../../store/product/actions';
-import DataTable from 'react-data-table-component';
+import {
+  bindProductAttributes,
+  bindProductBasicInfo,
+} from '../../../store/product/actions';
+import {
+  getAttributeDropdown,
+  getAttributeValuesDropdown,
+  instantCreateValues,
+} from '../../../store/attributes/actions';
 
 const Attribute = () => {
   const dispatch = useDispatch();
   const { product } = useSelector(({ products }) => products);
-  const handleDataOnChange = (event) => {};
-  const handleDropdownOChange = (event) => {};
+  const {
+    dropdownAttribute,
+    isDropdownAttribute,
+    dropdownAttributeValues,
+    isDropdownAttributeValues,
+  } = useSelector(({ attributes }) => attributes);
+
+  const handleDropdownOChange = (data, e, rowId) => {
+    const { name } = e;
+    const productAttributes = product.attributes;
+    const attributes = productAttributes.map((att) => {
+      if (att.id === rowId) {
+        att[name] = data;
+        att['values'] = name === 'attribute' ? [] : att.values;
+      }
+      return att;
+    });
+    dispatch(
+      bindProductBasicInfo({
+        ...product,
+        attributes,
+      })
+    );
+  };
+
   const addAttribute = () => {
     const newAttribute = {
       id: uniqId(),
@@ -30,6 +55,7 @@ const Attribute = () => {
 
     const attr = [...product.attributes];
     const updatedAttributes = [...attr, newAttribute];
+
     dispatch(
       bindProductBasicInfo({
         ...product,
@@ -46,6 +72,23 @@ const Attribute = () => {
         ...product,
         attributes: updatedAttributes,
       })
+    );
+  };
+
+  const handleAttributeDropdownOnFocus = () => {
+    dispatch(getAttributeDropdown());
+  };
+
+  const handleValueOnFocus = (id) => {
+    dispatch(getAttributeValuesDropdown(id));
+  };
+
+  const handleCreateValue = (inputValue, attribute) => {
+    const data = {
+      value: inputValue,
+    };
+    dispatch(
+      instantCreateValues(data, attribute.id, attribute.attribute?.value)
     );
   };
   return (
@@ -124,7 +167,7 @@ const Attribute = () => {
       <table className="border-separate border border-slate-400">
         <thead>
           <tr>
-            <th className="border border-slate-300">Attribute</th>
+            <th className="w-48 border border-slate-300">Attribute</th>
             <th className=" border border-slate-300">Value</th>
             <th className=" w-20 border border-slate-300">Actions</th>
           </tr>
@@ -134,34 +177,44 @@ const Attribute = () => {
             <tr key={index}>
               <td className=" border border-slate-300">
                 <ReactSelect
+                  theme={selectThemeColors}
                   menuPosition="fixed"
                   id="attributeIds"
                   instanceId="attributeIds"
-                  name="status"
+                  name="attribute"
                   className=" w-full "
                   isClearable
-                  value={null}
-                  options={[]}
+                  isLoading={!isDropdownAttribute}
+                  value={att.attribute}
+                  options={dropdownAttribute}
                   onChange={(data, e) => {
-                    handleDropdownOChange(data, e);
+                    handleDropdownOChange(data, e, att.id);
                   }}
-                  theme={selectThemeColors}
+                  onFocus={() => {
+                    handleAttributeDropdownOnFocus();
+                  }}
                 />
               </td>
               <td className="border border-slate-300">
-                <ReactSelect
+                <ReactCreatableSelect
+                  theme={selectThemeColors}
+                  isMulti
+                  isDisabled={!att.attribute}
                   menuPosition="fixed"
-                  id="attributeIds"
-                  instanceId="attributeIds"
-                  name="status"
+                  id="valuesId"
+                  instanceId="valuesId"
+                  name="values"
                   className=" w-full "
                   isClearable
-                  value={null}
-                  options={[]}
+                  value={att.values}
+                  options={dropdownAttributeValues}
                   onChange={(data, e) => {
-                    handleDropdownOChange(data, e);
+                    handleDropdownOChange(data, e, att.id);
                   }}
-                  theme={selectThemeColors}
+                  onCreateOption={(inputValue) => {
+                    handleCreateValue(inputValue, att);
+                  }}
+                  onFocus={() => handleValueOnFocus(att.attribute?.value)}
                 />
               </td>
               <td className="  border border-slate-300">

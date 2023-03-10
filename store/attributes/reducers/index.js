@@ -6,6 +6,8 @@ import {
   ATTRIBUTE_DATA_SUBMIT_PROGRESS,
   OPEN_ATTRIBUTE_SIDEBAR,
   BIND_ATTRIBUTE_BASIC_INFO,
+  GET_ATTRIBUTE_DROPDOWN,
+  GET_ATTRIBUTE_VALUES_DROPDOWN,
 } from '../action-types';
 import { attributeBasicInfoModal } from '../model';
 
@@ -18,6 +20,10 @@ const initialState = {
   total: 1,
   queryParams: {},
   queryObj: {},
+  dropdownAttribute: [],
+  isDropdownAttribute: true,
+  dropdownAttributeValues: [],
+  isDropdownAttributeValues: true,
 };
 
 const attributeReducers = (state = initialState, action) => {
@@ -56,6 +62,18 @@ const attributeReducers = (state = initialState, action) => {
       return {
         ...state,
         openAttributeSidebar: action.openAttributeSidebar,
+      };
+    case GET_ATTRIBUTE_DROPDOWN:
+      return {
+        ...state,
+        dropdownAttribute: action.dropdownAttribute,
+        isDropdownAttribute: action.isDropdownAttribute,
+      };
+    case GET_ATTRIBUTE_VALUES_DROPDOWN:
+      return {
+        ...state,
+        dropdownAttributeValues: action.dropdownAttributeValues,
+        isDropdownAttributeValues: action.isDropdownAttributeValues,
       };
 
     default:

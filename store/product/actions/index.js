@@ -11,6 +11,7 @@ import {
   GET_PRODUCTS_BY_QUERY,
   GET_PRODUCT_BY_ID,
   OPEN_PRODUCT_SIDEBAR,
+  BIND_PRODUCT_ATTRIBUTES,
 } from '../action-types';
 import { productBasicInfoModal } from '../model';
 
@@ -33,6 +34,7 @@ export const productSidebarOpen = (condition) => (dispatch) => {
   });
 };
 export const bindProductBasicInfo = (product) => (dispatch) => {
+  console.log('first');
   dispatch({
     type: BIND_PRODUCT_BASIC_INFO,
     product,
@@ -63,11 +65,11 @@ export const getProducts = (queryParams, queryObj) => async (dispatch) => {
     });
 };
 
-export const addProduct = (products) => (dispatch, getState) => {
+export const addProduct = (products) => async (dispatch, getState) => {
   console.log(products);
   const apiEndpoint = `/api/product/create`;
   dispatch(productDataSubmitOnProgress(true));
-  axios
+  await axios
     .post(apiEndpoint, products)
     .then((response) => {
       if (response.status === 201) {

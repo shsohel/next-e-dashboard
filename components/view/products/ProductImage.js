@@ -23,8 +23,11 @@ const ProductImage = () => {
   return (
     <div className="grid h-full grid-cols-1 gap-6 p-5">
       <div className="mb-5 grid  h-32 grid-cols-2 gap-2  lg:grid-cols-4">
-        {product.images.map((image) => (
-          <div className="group relative  h-32 w-full bg-purple-600">
+        {product.images.map((image, index) => (
+          <div
+            key={index}
+            className="group relative  h-32 w-full bg-purple-600"
+          >
             <Image
               alt={image.url}
               //   width={100}

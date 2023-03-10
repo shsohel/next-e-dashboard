@@ -6,6 +6,7 @@ import {
   PRODUCT_CATEGORY_DATA_SUBMIT_PROGRESS,
   OPEN_PRODUCT_CATEGORY_SIDEBAR,
   BIND_PRODUCT_CATEGORY_BASIC_INFO,
+  GET_PRODUCT_CATEGORY_DROPDOWN,
 } from '../action-types';
 import { ProductCategoryBasicInfoModal } from '../model';
 
@@ -18,6 +19,8 @@ const initialState = {
   total: 1,
   queryParams: {},
   queryObj: {},
+  dropdownProductCategory: [],
+  isDropdownProductCategoryLoaded: [],
 };
 
 const productCategoryReducers = (state = initialState, action) => {
@@ -57,6 +60,12 @@ const productCategoryReducers = (state = initialState, action) => {
       return {
         ...state,
         openProductCategorySidebar: action.openProductCategorySidebar,
+      };
+    case GET_PRODUCT_CATEGORY_DROPDOWN:
+      return {
+        ...state,
+        dropdownProductCategory: action.dropdownProductCategory,
+        isDropdownProductCategoryLoaded: action.isDropdownProductCategoryLoaded,
       };
 
     default:

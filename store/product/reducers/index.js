@@ -6,8 +6,9 @@ import {
   PRODUCT_DATA_SUBMIT_PROGRESS,
   OPEN_PRODUCT_SIDEBAR,
   BIND_PRODUCT_BASIC_INFO,
+  BIND_PRODUCT_ATTRIBUTES,
 } from '../action-types';
-import { ProductBasicInfoModal } from '../model';
+import { ProductBasicInfoModal, attributes } from '../model';
 
 const initialState = {
   dataProgress: false,
@@ -41,6 +42,7 @@ const productReducers = (state = initialState, action) => {
         ...state,
         product: action.product,
       };
+
     case PRODUCT_DATA_ON_PROGRESS:
       return {
         ...state,

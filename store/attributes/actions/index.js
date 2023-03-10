@@ -4,26 +4,18 @@ import { baseAxios } from '../../../services';
 import { notify } from '../../../utils/custom/Notification';
 import { confirmObj, status } from '../../../utils/enum';
 import { convertQueryString } from '../../../utils/utolity';
+import { bindProductBasicInfo } from '../../product/actions';
 import {
   ATTRIBUTE_DATA_ON_PROGRESS,
   ATTRIBUTE_DATA_SUBMIT_PROGRESS,
   BIND_ATTRIBUTE_BASIC_INFO,
   GET_ATTRIBUTES_BY_QUERY,
   GET_ATTRIBUTE_BY_ID,
+  GET_ATTRIBUTE_DROPDOWN,
+  GET_ATTRIBUTE_VALUES_DROPDOWN,
   OPEN_ATTRIBUTE_SIDEBAR,
 } from '../action-types';
 import { attributeBasicInfoModal } from '../model';
-
-// case ATTRIBUTE_DATA_SUBMIT_PROGRESS:
-//   return {
-//     ...state,
-//     submitDataProgress: action.submitDataProgress,
-//   };
-// case OPEN_ATTRIBUTE_SIDEBAR:
-//   return {
-//     ...state,
-//     openAttributeSidebar: action.openAttributeSidebar,
-//   };
 
 export const attributeDataOnProgress = (condition) => (dispatch) => {
   dispatch({
@@ -73,6 +65,108 @@ export const getAttributes = (queryParams, queryObj) => async (dispatch) => {
       dispatch(attributeDataOnProgress(false));
     });
 };
+
+export const getAttributeDropdown = () => async (dispatch) => {
+  const apiEndpoint = `/api/attributes`;
+  dispatch({
+    type: GET_ATTRIBUTE_DROPDOWN,
+    dropdownAttribute: [],
+    isDropdownAttribute: false,
+  });
+  await axios
+    .get(apiEndpoint)
+    .then((response) => {
+      if (response.status === 200) {
+        dispatch({
+          type: GET_ATTRIBUTE_DROPDOWN,
+          dropdownAttribute: response.data.data.map((d) => ({
+            label: d.name,
+            value: d._id,
+          })),
+          isDropdownAttribute: true,
+        });
+      }
+    })
+    .catch((e) => {
+      dispatch({
+        type: GET_ATTRIBUTE_DROPDOWN,
+        dropdownAttribute: [],
+        isDropdownAttribute: true,
+      });
+      notify('warning', 'Server Side ERROR');
+    });
+};
+export const getAttributeValuesDropdown = (attributeId) => async (dispatch) => {
+  const apiEndpoint = `/api/attributes/values/${attributeId}`;
+  dispatch({
+    type: GET_ATTRIBUTE_VALUES_DROPDOWN,
+    dropdownAttributeValues: [],
+    isDropdownAttributeValues: false,
+  });
+  await axios
+    .get(apiEndpoint)
+    .then((response) => {
+      if (response.status === 200) {
+        dispatch({
+          type: GET_ATTRIBUTE_VALUES_DROPDOWN,
+          dropdownAttributeValues: response.data.data.map((d) => ({
+            label: d,
+            value: d,
+          })),
+          isDropdownAttributeValues: true,
+        });
+      }
+    })
+    .catch((e) => {
+      dispatch({
+        type: GET_ATTRIBUTE_VALUES_DROPDOWN,
+        dropdownAttributeValues: [],
+        isDropdownAttributeValues: true,
+      });
+      notify('warning', 'Server Side ERROR');
+    });
+};
+export const instantCreateValues =
+  (data, rowId, attributeId) => async (dispatch, getState) => {
+    const apiEndpoint = `/api/attributes/values/${attributeId}`;
+    await axios
+      .put(apiEndpoint, data)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          console.log(getState());
+          const { product } = getState().products;
+          const productAttributes = product.attributes;
+          console.log('product', JSON.stringify(productAttributes, null, 2));
+          console.log(rowId);
+          const attributes = productAttributes.map((att) => {
+            if (att.id === rowId) {
+              att['values'] = [
+                ...att.values,
+                {
+                  value: data.value,
+                  label: data.value,
+                },
+              ];
+            }
+            return att;
+          });
+          console.log(attributes);
+
+          dispatch(
+            bindProductBasicInfo({
+              ...product,
+              attributes,
+            })
+          );
+          dispatch(getAttributeValuesDropdown(attributeId));
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        notify('warning', 'Server Side ERROR');
+      });
+  };
 
 export const addAttribute = (attribute) => (dispatch, getState) => {
   console.log(attribute);

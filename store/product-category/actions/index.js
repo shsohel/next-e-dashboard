@@ -11,6 +11,7 @@ import {
   GET_PRODUCT_CATEGORIES_BY_QUERY,
   GET_PRODUCT_CATEGORY_BY_ID,
   OPEN_PRODUCT_CATEGORY_SIDEBAR,
+  GET_PRODUCT_CATEGORY_DROPDOWN,
 } from '../action-types';
 import { ProductCategoryBasicInfoModal } from '../model';
 
@@ -66,6 +67,37 @@ export const getProductCategories =
         dispatch(productCategoryDataOnProgress(false));
       });
   };
+
+export const getProductCategoryDropdown = () => async (dispatch) => {
+  const apiEndpoint = `/api/product-category}`;
+  dispatch({
+    type: GET_PRODUCT_CATEGORY_DROPDOWN,
+    dropdownProductCategory: [],
+    isDropdownProductCategoryLoaded: false,
+  });
+  await axios
+    .get()
+    .then((response) => {
+      if (response.status === 200) {
+        dispatch({
+          type: GET_PRODUCT_CATEGORY_DROPDOWN,
+          dropdownProductCategory: response.data.data.map((pc) => ({
+            label: pc.name,
+            value: pc._id,
+          })),
+          isDropdownProductCategoryLoaded: true,
+        });
+      }
+    })
+    .catch((e) => {
+      notify('warning', 'Server Side ERROR');
+      dispatch({
+        type: GET_PRODUCT_CATEGORY_DROPDOWN,
+        dropdownProductCategory: [],
+        isDropdownProductCategoryLoaded: true,
+      });
+    });
+};
 
 export const addProductCategory =
   (productCategories) => (dispatch, getState) => {

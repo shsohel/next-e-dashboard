@@ -1,12 +1,12 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+// import { useRouter } from 'next/router';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import ReactSelect from 'react-select';
 import CreatableSelect from 'react-select/creatable';
+import { bindProductBasicInfo } from '../../../store/product/actions';
 import { selectThemeColors } from '../../../utils/utolity';
 import TabControl from '../../custom/TabControl';
-import RichEditor from '../../RichEditor';
+// import RichEditor from '../../RichEditor';
 import Attribute from './Attribute';
 import GeneralInfo from './GeneralInfo';
 import Inventory from './Inventory';
@@ -14,16 +14,28 @@ import ProductImage from './ProductImage';
 import Shipping from './Shipping';
 
 const ProductForm = () => {
-  const router = useRouter();
+  const dispatch = useDispatch();
+  // const router = useRouter();
   const { product } = useSelector(({ products }) => products);
 
-  const handleDataOnChange = (event) => {};
+  const handleDataOnChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    const updatedProduct = {
+      ...product,
+      [name]:
+        type === 'number'
+          ? Number(value)
+          : type === 'checkbox'
+          ? checked
+          : value,
+    };
+    dispatch(bindProductBasicInfo(updatedProduct));
+  };
 
   const handleDropdownOChange = () => {};
 
   const handleSubmit = () => {};
   const handleCancel = () => {};
-  console.log(product);
   const defaultTabs = [
     {
       id: 1,
@@ -80,7 +92,7 @@ const ProductForm = () => {
                   type="text"
                   name="name"
                   id="name"
-                  autoComplete="given-name"
+                  autoComplete="name"
                   className="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                   value={product.name}
                   onChange={(e) => {
@@ -100,11 +112,11 @@ const ProductForm = () => {
                 </label>
                 <textarea
                   type="text"
-                  name="name"
-                  id="name"
-                  autoComplete="given-name"
+                  name="descriptions"
+                  id="descriptions"
+                  autoComplete="descriptions"
                   className="mt-1 block min-h-[5rem] w-full rounded-sm border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                  value={product.name}
+                  value={product.descriptions}
                   onChange={(e) => {
                     handleDataOnChange(e);
                   }}
@@ -119,11 +131,11 @@ const ProductForm = () => {
                 </label>
                 <textarea
                   type="text"
-                  name="name"
-                  id="name"
-                  autoComplete="given-name"
+                  name="shotDescriptions"
+                  id="shotDescriptions"
+                  autoComplete="shotDescriptions"
                   className="mt-1 block min-h-[2rem] w-full rounded-sm border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-                  value={product.name}
+                  value={product.shotDescriptions}
                   onChange={(e) => {
                     handleDataOnChange(e);
                   }}
