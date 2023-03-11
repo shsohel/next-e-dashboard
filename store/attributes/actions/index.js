@@ -126,19 +126,38 @@ export const getAttributeValuesDropdown = (attributeId) => async (dispatch) => {
       notify('warning', 'Server Side ERROR');
     });
 };
+
+export const instantCreateAttribute =
+  (attribute, createdAttributeBack, rowId) => (dispatch) => {
+    const apiEndpoint = `/api/attributes/create`;
+    dispatch(attributeDataSubmitOnProgress(true));
+    axios
+      .post(apiEndpoint, attribute)
+      .then((response) => {
+        if (response.status === 201) {
+          notify('success', 'The Attribute has been added successfully');
+          createdAttributeBack(response.data.data, rowId);
+          dispatch(attributeDataSubmitOnProgress(false));
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        if (response.status === 400) {
+          notify('error', `${response.data.error}`);
+        }
+        dispatch(attributeDataSubmitOnProgress(false));
+      });
+  };
+
 export const instantCreateValues =
   (data, rowId, attributeId) => async (dispatch, getState) => {
     const apiEndpoint = `/api/attributes/values/${attributeId}`;
     await axios
       .put(apiEndpoint, data)
       .then((response) => {
-        console.log(response);
         if (response.status === 200) {
-          console.log(getState());
           const { product } = getState().products;
           const productAttributes = product.attributes;
-          console.log('product', JSON.stringify(productAttributes, null, 2));
-          console.log(rowId);
           const attributes = productAttributes.map((att) => {
             if (att.id === rowId) {
               att['values'] = [

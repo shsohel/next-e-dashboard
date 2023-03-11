@@ -11,6 +11,7 @@ import {
 } from '../../../store/product-category/actions';
 import {
   addProduct,
+  updateProduct,
   bindProductBasicInfo,
 } from '../../../store/product/actions';
 import { productStatus } from '../../../store/product/model';
@@ -24,7 +25,7 @@ import Inventory from './Inventory';
 import ProductImage from './ProductImage';
 import Shipping from './Shipping';
 
-const ProductForm = () => {
+const ProductEditForm = () => {
   const dispatch = useDispatch();
   // const router = useRouter();
   const { product } = useSelector(({ products }) => products);
@@ -155,6 +156,7 @@ const ProductForm = () => {
 
   const handleSubmit = () => {
     const submitObj = {
+      _id: product._id,
       name: product.name,
       sku: product.sku,
       price: product.price,
@@ -182,7 +184,7 @@ const ProductForm = () => {
       status: product.status?.label,
     };
     console.log('submitObj', JSON.stringify(submitObj, null, 2));
-    dispatch(addProduct(submitObj));
+    dispatch(updateProduct(submitObj));
   };
   const handleCancel = () => {};
   const defaultTabs = [
@@ -210,7 +212,7 @@ const ProductForm = () => {
     <div>
       <div className="mb-1 flex justify-between border px-5 py-2">
         <div>
-          <h3 className="font-medium">New Product</h3>
+          <h3 className="font-medium">Edit Product</h3>
         </div>
         <div>
           <button
@@ -424,4 +426,4 @@ const ProductForm = () => {
   );
 };
 
-export default ProductForm;
+export default ProductEditForm;

@@ -39,6 +39,9 @@ const GeneralInfo = () => {
           onChange={(e) => {
             handleDataOnChange(e);
           }}
+          onFocus={(e) => {
+            e.target.select();
+          }}
         />
       </div>
       <div className="grid grid-cols-5 items-center">
@@ -57,6 +60,9 @@ const GeneralInfo = () => {
           value={product.salePrice}
           onChange={(e) => {
             handleDataOnChange(e);
+          }}
+          onFocus={(e) => {
+            e.target.select();
           }}
         />
       </div>

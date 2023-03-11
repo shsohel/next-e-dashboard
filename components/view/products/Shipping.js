@@ -49,6 +49,9 @@ const Shipping = () => {
           onChange={(e) => {
             handleDataOnChange(e);
           }}
+          onFocus={(e) => {
+            e.target.select();
+          }}
         />
       </div>
       <div className="grid grid-cols-5 items-center gap-4">
@@ -71,6 +74,9 @@ const Shipping = () => {
               onChange={(e) => {
                 handleDataOnChange(e);
               }}
+              onFocus={(e) => {
+                e.target.select();
+              }}
             />
             <input
               type="number"
@@ -83,6 +89,9 @@ const Shipping = () => {
               onChange={(e) => {
                 handleDataOnChange(e);
               }}
+              onFocus={(e) => {
+                e.target.select();
+              }}
             />
             <input
               type="number"
@@ -94,6 +103,9 @@ const Shipping = () => {
               value={product.height}
               onChange={(e) => {
                 handleDataOnChange(e);
+              }}
+              onFocus={(e) => {
+                e.target.select();
               }}
             />
           </div>

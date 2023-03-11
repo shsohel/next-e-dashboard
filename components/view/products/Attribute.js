@@ -15,6 +15,7 @@ import {
 import {
   getAttributeDropdown,
   getAttributeValuesDropdown,
+  instantCreateAttribute,
   instantCreateValues,
 } from '../../../store/attributes/actions';
 
@@ -81,6 +82,37 @@ const Attribute = () => {
 
   const handleValueOnFocus = (id) => {
     dispatch(getAttributeValuesDropdown(id));
+  };
+
+  const bindAttribute = (attribute, rowId) => {
+    const option = {
+      value: attribute._id,
+      label: attribute.name,
+    };
+
+    const productAttributes = product.attributes;
+    const attributes = productAttributes.map((att) => {
+      if (att.id === rowId) {
+        att['attribute'] = option;
+        att['values'] = [];
+      }
+      return att;
+    });
+    dispatch(
+      bindProductBasicInfo({
+        ...product,
+        attributes,
+      })
+    );
+  };
+
+  const handleAttributeCreate = (value, rowId) => {
+    const option = {
+      name: value,
+      descriptions: value,
+    };
+
+    dispatch(instantCreateAttribute(option, bindAttribute, rowId));
   };
 
   const handleCreateValue = (inputValue, attribute) => {
@@ -176,7 +208,7 @@ const Attribute = () => {
           {product.attributes.map((att, index) => (
             <tr key={index}>
               <td className=" border border-slate-300">
-                <ReactSelect
+                <ReactCreatableSelect
                   theme={selectThemeColors}
                   menuPosition="fixed"
                   id="attributeIds"
@@ -192,6 +224,9 @@ const Attribute = () => {
                   }}
                   onFocus={() => {
                     handleAttributeDropdownOnFocus();
+                  }}
+                  onCreateOption={(inputValue) => {
+                    handleAttributeCreate(inputValue, att.id);
                   }}
                 />
               </td>

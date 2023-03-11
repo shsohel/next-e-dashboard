@@ -163,6 +163,51 @@ export const addProductCategory =
       });
   };
 
+export const instantCreateProductCategory =
+  (productCategory, createdCategoryBack) => (dispatch) => {
+    const apiEndpoint = `/api/product-category/create`;
+    dispatch(productCategoryDataSubmitOnProgress(true));
+    axios
+      .post(apiEndpoint, productCategory)
+      .then((response) => {
+        if (response.status === 201) {
+          notify('success', 'The ProductCategory has been added successfully');
+          createdCategoryBack(response.data.data);
+          dispatch(productCategoryDataSubmitOnProgress(false));
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        if (response.status === 400) {
+          notify('error', `${response.data.error}`);
+        }
+        dispatch(productCategoryDataSubmitOnProgress(false));
+      });
+  };
+export const instantCreateProductSubCategoryByCategoryId =
+  (subCategory, categoryId, createdSubCategoryBack) => (dispatch) => {
+    const apiEndpoint = `/api/product-category/sub-category/${categoryId}`;
+    dispatch(productCategoryDataSubmitOnProgress(true));
+    axios
+      .put(apiEndpoint, subCategory)
+      .then((response) => {
+        if (response.status === 200) {
+          notify(
+            'success',
+            'The Product Sub Category has been added successfully'
+          );
+          createdSubCategoryBack(response.data.data, categoryId);
+          dispatch(productCategoryDataSubmitOnProgress(false));
+        }
+      })
+      .catch(({ response }) => {
+        if (response.status === 400) {
+          notify('error', `${response.data.error}`);
+        }
+        dispatch(productCategoryDataSubmitOnProgress(false));
+      });
+  };
+
 export const getProductCategory =
   (ProductCategory) => async (dispatch, getState) => {
     dispatch(productCategoryDataOnProgress(true));

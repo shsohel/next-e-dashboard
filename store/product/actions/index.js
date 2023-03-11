@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import { confirmDialog } from '../../../components/custom/ConfirmDialogue';
 import { baseAxios } from '../../../services';
 import { notify } from '../../../utils/custom/Notification';
 import { confirmObj, status } from '../../../utils/enum';
-import { convertQueryString } from '../../../utils/utolity';
+import { convertQueryString, uniqId } from '../../../utils/utolity';
 import {
   PRODUCT_DATA_ON_PROGRESS,
   PRODUCT_DATA_SUBMIT_PROGRESS,
@@ -72,18 +73,20 @@ export const addProduct = (products) => async (dispatch, getState) => {
     .post(apiEndpoint, products)
     .then((response) => {
       if (response.status === 201) {
-        const { queryParams, queryObj } = getState().products;
+        const router = useRouter();
         dispatch(productDataSubmitOnProgress(false));
         dispatch(bindProductBasicInfo(productBasicInfoModal));
-        dispatch(getProducts(queryParams, queryObj));
         notify('success', 'The Product has been added successfully');
+        router.push({
+          pathname: 'product/[slug]',
+          query: { slug: response.data.slug },
+        });
       }
     })
     .catch(({ response }) => {
       if (response.status === 400) {
         notify('error', `${response.data.error}`);
       }
-      console.log(response);
     });
 };
 
@@ -118,6 +121,75 @@ export const getProduct = (Product) => async (dispatch, getState) => {
       }
     });
 };
+export const getProductBySlug = (slug) => async (dispatch, getState) => {
+  dispatch(productDataOnProgress(true));
+  const apiEndpoint = `/api/product/get/${slug}`;
+  await axios
+    .get(apiEndpoint)
+    .then((response) => {
+      if (response.status === status.success) {
+        const { data } = response.data;
+        const obj = {
+          ...productBasicInfoModal,
+          _id: data._id,
+          name: data.name,
+          price: data.price,
+          salePrice: data.salePrice,
+          sku: data.sku,
+          isProductStockAvailable: data.isProductStockAvailable,
+          weight: data.weight,
+          length: data.length,
+          height: data.height,
+          width: data.width,
+          attributes: data.attribute.map((att) => ({
+            id: uniqId(),
+            attribute: { label: att.id.name, value: att.id._id },
+            values: att.values.map((v) => ({ value: v, label: v })),
+          })),
+          images: data.images.map((m) => ({
+            ...m,
+            id: uniqId(),
+          })),
+          productCategory: {
+            label: data.productCategories[0]?.name,
+            value: data.productCategories[0]?._id,
+          },
+          productSubCategory: data.productSubCategories.map((sub) => ({
+            label: sub?.name,
+            value: sub?._id,
+          })),
+          tag: data.tags.map((sub) => ({
+            label: sub?.name,
+            value: sub?._id,
+          })),
+          descriptions: data.descriptions,
+          shotDescriptions: data.shotDescriptions,
+        };
+        // const ProductObj = {
+        //   ...data,
+        //   subCategories: data.productSubCategories.map((v) => ({
+        //     value: v._id,
+        //     label: v.name,
+        //   })),
+        // };
+        dispatch(bindProductBasicInfo(obj));
+        dispatch(productDataOnProgress(false));
+      }
+    })
+    .catch(({ response }) => {
+      if (response.status === 400) {
+        const router = useRouter();
+        router.push('/404');
+      }
+      console.log(response);
+      dispatch(productDataOnProgress(false));
+      // if (response?.status === status.severError) {
+      //   notify('error', `Please contact the support team!!!`);
+      // } else if (response?.status === status.badRequest) {
+      //   notify('errors', response.data.error);
+      // }
+    });
+};
 export const updateProduct = (product) => async (dispatch, getState) => {
   dispatch(productDataSubmitOnProgress(true));
   const apiEndpoint = `/api/product/${product._id}`;
@@ -125,12 +197,8 @@ export const updateProduct = (product) => async (dispatch, getState) => {
     .put(apiEndpoint, product)
     .then((response) => {
       if (response.status === status.success) {
-        const { queryParams, queryObj } = getState().products;
-        dispatch(bindProductBasicInfo(productBasicInfoModal));
-        dispatch(productSidebarOpen(false));
         dispatch(productDataSubmitOnProgress(false));
         notify('success', `The Product has been updated successfully `);
-        dispatch(getProducts(queryParams, queryObj));
       }
     })
     .catch(({ response }) => {

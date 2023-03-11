@@ -123,8 +123,9 @@ export const addProductSubCategory =
         console.log(response);
       });
   };
+
 export const instantCreateProductSubCategory =
-  (productSubCategory, createdSubCategoryBack) => (dispatch, getState) => {
+  (productSubCategory, createdSubCategoryBack) => (dispatch) => {
     const apiEndpoint = `/api/product-sub-category/create`;
     dispatch(productCategoryDataSubmitOnProgress(true));
     axios

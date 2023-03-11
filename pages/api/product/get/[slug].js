@@ -1,10 +1,20 @@
 import { baseAxios } from '../../../../services';
 
 export default (req, res) => {
-  if (req.method === 'GET') {
-    const { id } = req.query;
+  if (req.method === 'DELETE') {
+    const { slug } = req.query;
     baseAxios
-      .get(`/productCategory/${id}/sub-category`)
+      .delete(`/product/${slug}`)
+      .then((response) => {
+        res.status(200).json(response.data);
+      })
+      .catch(({ response }) => {
+        res.status(400).json(response.data);
+      });
+  } else if (req.method === 'GET') {
+    const { slug } = req.query;
+    baseAxios
+      .get(`/product/slug/${slug}`)
       .then((response) => {
         res.status(200).json(response.data);
       })
@@ -12,9 +22,9 @@ export default (req, res) => {
         res.status(400).json(response.data);
       });
   } else if (req.method === 'PUT') {
-    const { id } = req.query;
+    const { slug } = req.query;
     baseAxios
-      .put(`/productCategory/${id}/sub-category`, req.body)
+      .put(`/product/${slug}`, req.body)
       .then((response) => {
         res.status(200).json(response.data);
       })

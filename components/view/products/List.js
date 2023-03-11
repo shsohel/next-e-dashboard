@@ -77,6 +77,13 @@ const ProductList = (props) => {
     router.push('/product/new');
   };
 
+  const handleEdit = (row) => {
+    router.push({
+      pathname: 'product/[slug]',
+      query: { slug: row.slug },
+    });
+  };
+
   return (
     <div>
       <div className="mb-3 flex  items-center justify-between">
@@ -157,7 +164,7 @@ const ProductList = (props) => {
                   />
                   <FaPencilAlt
                     onClick={() => {
-                      dispatch(getProduct(row));
+                      handleEdit(row);
                     }}
                     size={16}
                     className="cursor-pointer fill-green-600"
