@@ -1,4 +1,4 @@
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactSelect from 'react-select';
@@ -13,7 +13,10 @@ import {
   addProduct,
   bindProductBasicInfo,
 } from '../../../store/product/actions';
-import { productStatus } from '../../../store/product/model';
+import {
+  productBasicInfoModal,
+  productStatus,
+} from '../../../store/product/model';
 import { getTagDropdown, instantCreateTag } from '../../../store/tag/actions';
 import { selectThemeColors } from '../../../utils/utolity';
 import TabControl from '../../custom/TabControl';
@@ -26,7 +29,7 @@ import Shipping from './Shipping';
 
 const ProductForm = () => {
   const dispatch = useDispatch();
-  // const router = useRouter();
+  const router = useRouter();
   const { product } = useSelector(({ products }) => products);
   const {
     dropdownProductCategory,
@@ -153,6 +156,14 @@ const ProductForm = () => {
     );
   };
 
+  const redirectAfterProductSubmit = (slug) => {
+    console.log(slug);
+    router.push({
+      pathname: '/product/[slug]',
+      query: { slug },
+    });
+  };
+
   const handleSubmit = () => {
     const submitObj = {
       name: product.name,
@@ -182,9 +193,12 @@ const ProductForm = () => {
       status: product.status?.label,
     };
     console.log('submitObj', JSON.stringify(submitObj, null, 2));
-    dispatch(addProduct(submitObj));
+    dispatch(addProduct(submitObj, redirectAfterProductSubmit));
   };
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    router.push('/product');
+    dispatch(bindProductBasicInfo(productBasicInfoModal));
+  };
   const defaultTabs = [
     {
       id: 1,

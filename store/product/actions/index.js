@@ -66,29 +66,28 @@ export const getProducts = (queryParams, queryObj) => async (dispatch) => {
     });
 };
 
-export const addProduct = (products) => async (dispatch, getState) => {
-  const apiEndpoint = `/api/product/create`;
-  dispatch(productDataSubmitOnProgress(true));
-  await axios
-    .post(apiEndpoint, products)
-    .then((response) => {
-      if (response.status === 201) {
-        const router = useRouter();
-        dispatch(productDataSubmitOnProgress(false));
-        dispatch(bindProductBasicInfo(productBasicInfoModal));
-        notify('success', 'The Product has been added successfully');
-        router.push({
-          pathname: 'product/[slug]',
-          query: { slug: response.data.slug },
-        });
-      }
-    })
-    .catch(({ response }) => {
-      if (response.status === 400) {
-        notify('error', `${response.data.error}`);
-      }
-    });
-};
+export const addProduct =
+  (products, redirectCallBack) => async (dispatch, getState) => {
+    const apiEndpoint = `/api/product/create`;
+    dispatch(productDataSubmitOnProgress(true));
+    await axios
+      .post(apiEndpoint, products)
+      .then((response) => {
+        if (response.status === 201) {
+          dispatch(productDataSubmitOnProgress(false));
+          dispatch(bindProductBasicInfo(productBasicInfoModal));
+          notify('success', 'The Product has been added successfully');
+
+          redirectCallBack(response.data.data.slug);
+        }
+      })
+      .catch(({ response }) => {
+        console.log(response);
+        if (response.status === 400) {
+          notify('error', `${response.data.error}`);
+        }
+      });
+  };
 
 export const getProduct = (Product) => async (dispatch, getState) => {
   dispatch(productDataOnProgress(true));
@@ -121,7 +120,7 @@ export const getProduct = (Product) => async (dispatch, getState) => {
       }
     });
 };
-export const getProductBySlug = (slug) => async (dispatch, getState) => {
+export const getProductBySlug = (slug, router) => async (dispatch, getState) => {
   dispatch(productDataOnProgress(true));
   const apiEndpoint = `/api/product/get/${slug}`;
   await axios
@@ -178,7 +177,6 @@ export const getProductBySlug = (slug) => async (dispatch, getState) => {
     })
     .catch(({ response }) => {
       if (response.status === 400) {
-        const router = useRouter();
         router.push('/404');
       }
       console.log(response);

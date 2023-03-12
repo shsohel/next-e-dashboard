@@ -4,6 +4,7 @@ import { useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  bindProductBasicInfo,
   deleteProduct,
   getProduct,
   getProducts,
@@ -13,6 +14,7 @@ import { IoMdRefreshCircle } from 'react-icons/io';
 import { FaPencilAlt, FaTrashAlt } from 'react-icons/fa';
 import ListLoader from '../../custom/ListLoader';
 import { useRouter } from 'next/router';
+import { productBasicInfoModal } from '../../../store/product/model';
 
 const ProductList = (props) => {
   const dispatch = useDispatch();
@@ -75,11 +77,12 @@ const ProductList = (props) => {
 
   const handleNew = () => {
     router.push('/product/new');
+    dispatch(bindProductBasicInfo(productBasicInfoModal));
   };
 
   const handleEdit = (row) => {
     router.push({
-      pathname: 'product/[slug]',
+      pathname: '/product/[slug]',
       query: { slug: row.slug },
     });
   };

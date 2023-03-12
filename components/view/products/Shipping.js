@@ -54,63 +54,76 @@ const Shipping = () => {
           }}
         />
       </div>
-      <div className="grid grid-cols-5 items-center gap-4">
+      <div className="grid grid-cols-5 items-center">
         <label
           htmlFor="name"
           className="col-span-1 block text-sm font-medium text-gray-700"
         >
-          Dimensions (cm)
+          Length(cm)
         </label>
-        <div className="col-span-4">
-          <div className="grid grid-cols-3 gap-6">
-            <input
-              type="number"
-              name="length"
-              id="length"
-              autoComplete="given-name"
-              placeholder="Length"
-              className="mt-1  block w-full rounded-sm border-gray-300 text-sm shadow-sm focus:border-primary focus:ring-primary "
-              value={product.length}
-              onChange={(e) => {
-                handleDataOnChange(e);
-              }}
-              onFocus={(e) => {
-                e.target.select();
-              }}
-            />
-            <input
-              type="number"
-              name="width"
-              id="width"
-              autoComplete="width"
-              placeholder="Width"
-              className="mt-1  block w-full rounded-sm border-gray-300 text-sm shadow-sm focus:border-primary focus:ring-primary "
-              value={product.width}
-              onChange={(e) => {
-                handleDataOnChange(e);
-              }}
-              onFocus={(e) => {
-                e.target.select();
-              }}
-            />
-            <input
-              type="number"
-              name="height"
-              id="height"
-              autoComplete="height"
-              placeholder="Height"
-              className="mt-1  block w-full rounded-sm border-gray-300 text-sm shadow-sm focus:border-primary focus:ring-primary "
-              value={product.height}
-              onChange={(e) => {
-                handleDataOnChange(e);
-              }}
-              onFocus={(e) => {
-                e.target.select();
-              }}
-            />
-          </div>
-        </div>
+        <input
+          type="number"
+          name="length"
+          id="length"
+          autoComplete="given-name"
+          placeholder="Length"
+          className="col-span-4 mt-1 block w-full rounded-sm border-gray-300 text-sm shadow-sm focus:border-primary focus:ring-primary "
+          value={product.length}
+          onChange={(e) => {
+            handleDataOnChange(e);
+          }}
+          onFocus={(e) => {
+            e.target.select();
+          }}
+        />
       </div>
+      <div className="grid grid-cols-5 items-center">
+        <label
+          htmlFor="name"
+          className="col-span-1 block text-sm font-medium text-gray-700"
+        >
+          Width(cm)
+        </label>
+        <input
+          type="number"
+          name="width"
+          id="width"
+          autoComplete="width"
+          placeholder="Width"
+          className="col-span-4 mt-1  block w-full rounded-sm border-gray-300 text-sm shadow-sm focus:border-primary focus:ring-primary "
+          value={product.width}
+          onChange={(e) => {
+            handleDataOnChange(e);
+          }}
+          onFocus={(e) => {
+            e.target.select();
+          }}
+        />
+      </div>
+      <div className="grid grid-cols-5 items-center">
+        <label
+          htmlFor="name"
+          className="col-span-1 block text-sm font-medium text-gray-700"
+        >
+          Height(cm)
+        </label>
+        <input
+          type="number"
+          name="height"
+          id="height"
+          autoComplete="height"
+          placeholder="Height"
+          className="col-span-4 mt-1  block w-full rounded-sm border-gray-300 text-sm shadow-sm focus:border-primary focus:ring-primary "
+          value={product.height}
+          onChange={(e) => {
+            handleDataOnChange(e);
+          }}
+          onFocus={(e) => {
+            e.target.select();
+          }}
+        />
+      </div>
+
       <div className="grid grid-cols-5 items-center">
         <label
           htmlFor="name"

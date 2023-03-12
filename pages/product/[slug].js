@@ -9,9 +9,10 @@ const EditProduct = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { slug } = router.query;
+
   useEffect(() => {
     if (slug) {
-      dispatch(getProductBySlug(slug));
+      dispatch(getProductBySlug(slug, router));
     }
   }, [dispatch, slug]);
 
